@@ -22,7 +22,7 @@ class App {
 }
 
 window.onload = () => {
+	
 	let app = new App(new Game());
-
 	app.setup();
 }
