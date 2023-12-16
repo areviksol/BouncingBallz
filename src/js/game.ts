@@ -1,5 +1,5 @@
-import Circle from "./Circle";
-import Ground from "./Ground";
+import Circle from "./circle";
+import Ground from "./ground";
 import {randomIntFromInterval} from "./utils"
 
 export default class Game {
@@ -28,7 +28,7 @@ export default class Game {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		const skyGradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
 		skyGradient.addColorStop(0, 'rgba(126,188,204,255)'); 
-		skyGradient.addColorStop(1, 'rgba(125, 125,0,0.5)'); 
+		skyGradient.addColorStop(1, 'rgba(160,211,225,255)'); 
 
 		this.ctx.fillStyle = skyGradient;
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);

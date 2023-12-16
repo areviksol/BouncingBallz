@@ -1,4 +1,4 @@
-import Circle from "./Circle";
+import Circle from "./circle";
 
 export default class Ground {
     groundLevel: number;
