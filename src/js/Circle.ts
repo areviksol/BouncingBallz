@@ -54,43 +54,59 @@ export default class Circle {
         ctx.closePath();
     }
 
-
-    update(ctx: CanvasRenderingContext2D) {
+    update(ctx: CanvasRenderingContext2D, balls: Circle[]) {
         const newY = this.y + this.velocityY;
-        if (newY + this.radius >= this.groundLevel) {
-            this.y = this.groundLevel - this.radius + 5;
-            this.velocityY = -this.velocityY * this.friction;
-            this.opacity = 0;
-            this.radius *= 0.95;
 
-            if (Math.abs(this.velocityY) < 1 && this.y - this.groundLevel >= 0) {
+        this.velocityY += this.gravity;
+        if (newY + this.radius >= this.groundLevel) {
+            this.y = this.groundLevel - this.radius;
+            this.velocityY *= -this.friction;
+            if (Math.abs(this.velocityY) < 1) {
                 this.velocityY = 0;
-                this.y = newY
-                this.opacity = 0;
-                this.radius *= 0.99;
+                this.friction = 0;
             }
         } else {
-            this.groundLevel -= 0.01;
-            this.velocityY += this.gravity;
-            this.opacity = 0;
             this.y = newY;
-            this.radius = this.radius > 5 ? this.radius - 0.1 : 0;
         }
 
-        if (this.y >= this.groundLevel - this.radius) {
-            this.opacity = 0;
+        if (Math.abs(this.velocityY) < 0.1) {
+            this.velocityY = 0;
         }
 
+        balls.forEach(ball => {
+            if (ball !== this) {
+                const dx = ball.x - this.x;
+                const dy = ball.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const minDistance = this.radius + ball.radius;
 
-        if (this.z > 0)
-            this.z -= 0.01;
+                if (distance <= minDistance) {
+                    const angle = Math.atan2(dy, dx);
+                    const sin = Math.sin(angle);
+                    const cos = Math.cos(angle);
 
-        if (this.id % 2 == 0)
-            this.x += this.z;
-        else
-            this.x -= this.z;
+                    const velX1 = this.velocityY * cos + this.velocityY * sin;
+                    const velY1 = this.velocityY * sin - this.velocityY * cos;
+
+                    const velX2 = ball.velocityY * cos + ball.velocityY * sin;
+                    const velY2 = ball.velocityY * sin - ball.velocityY * cos;
+
+                    const finalVelX1 = ((this.radius - ball.radius) * velX1 + (ball.radius * 2) * velX2) / (this.radius + ball.radius);
+                    const finalVelX2 = ((ball.radius - this.radius) * velX2 + (this.radius * 2) * velX1) / (this.radius + ball.radius);
+
+                    this.velocityY = finalVelX1 * cos - velY1 * sin;
+                    ball.velocityY = finalVelX2 * cos - velY2 * sin;
+                    
+                    const move = minDistance - distance + 1;
+                    this.x -= move * cos;
+                    this.y -= move * sin;
+                    ball.x += move * cos;
+                    ball.y += move * sin;
+                }
+            }
+        });
+
+
         this.draw(ctx);
     }
 }
-
-

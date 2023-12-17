@@ -42,7 +42,7 @@ export default class Game {
 		this.ground.update(this.canvas, this.ctx);
 
 		this.circles.forEach((circle) => {
-		  circle.update(this.ctx);
+		  circle.update(this.ctx, this.circles);
 		});
 	}
 }
